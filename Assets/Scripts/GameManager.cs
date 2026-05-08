@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,17 +10,43 @@ public class GameManager : MonoBehaviour
 
     public float ScrollSpeed { get; private set; }
     public float Distance { get; private set; }
+    public bool IsGameOver { get; private set; }
 
-    void Awake()
+    private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         ScrollSpeed = config.startSpeed;
+        IsGameOver = false;
+        Time.timeScale = 1f;   // ensure time is normal on start
     }
 
-    void Update()
+    private void Update()
     {
+        // Restart with R key (new Input System)
+        if (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame)
+            RestartGame();
+
+        if (IsGameOver) return;
+
         ScrollSpeed = Mathf.Min(ScrollSpeed + config.speedIncreaseRate * Time.deltaTime, config.maxSpeed);
         Distance += ScrollSpeed * Time.deltaTime;
+    }
+
+    public void EndGame()
+    {
+        if (IsGameOver) return;
+        IsGameOver = true;
+        Debug.Log("GAME OVER!");
+        Time.timeScale = 0f;
+
+        UIManager ui = FindFirstObjectByType<UIManager>();
+        if (ui != null) ui.ShowGameOver();
+    }
+
+    public void RestartGame()
+    {
+        Time.timeScale = 1f;    // critical: unfreeze time
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
