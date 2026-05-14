@@ -71,6 +71,8 @@ public class LevelGenerator : MonoBehaviour
             new Vector3(0f, 0f, _spawnZ + chunk.Length * 0.5f),
             Quaternion.identity);
 
+        chunk.ResetCoins();
+
         _activeChunks.Add(chunk);
         _instanceToPrefab[chunk] = prefab;
         _spawnZ += chunk.Length;

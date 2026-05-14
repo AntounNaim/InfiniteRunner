@@ -12,6 +12,13 @@ public class GameManager : MonoBehaviour
     public float Distance { get; private set; }
     public bool IsGameOver { get; private set; }
 
+    public int Coins { get; private set; }
+
+    public void AddCoin()
+    {
+        Coins++;
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
@@ -48,5 +55,24 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;    // critical: unfreeze time
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void QuitToMenu()
+    {
+        Time.timeScale = 1f;
+        // Option 1: load main menu scene (create one)
+        // SceneManager.LoadScene("MainMenu");
+        // Option 2: restart (for now)
+        RestartGame();
+    }
+
+    public void ResumeGame()
+    {
+        // Only resume if game is not over and the game is actually paused
+        if (!IsGameOver && Time.timeScale == 0f)
+        {
+            PauseManager pm = FindFirstObjectByType<PauseManager>();
+            if (pm != null) pm.Resume();
+        }
     }
 }

@@ -13,13 +13,14 @@ public class UIManager : MonoBehaviour
         gameOverPanel.SetActive(false);
     }
 
+    public TextMeshProUGUI coinsText;
+
     private void Update()
     {
-        // Update distance only if game is not over
         if (GameManager.Instance != null && !GameManager.Instance.IsGameOver)
         {
-            int distance = Mathf.FloorToInt(GameManager.Instance.Distance);
-            distanceText.text = "Distance: " + distance;
+            distanceText.text = "Distance: " + Mathf.FloorToInt(GameManager.Instance.Distance);
+            coinsText.text = "Coins: " + GameManager.Instance.Coins;
         }
     }
 

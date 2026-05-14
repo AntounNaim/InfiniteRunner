@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpVelocity = 8f;
     [SerializeField] private float gravity = -25f;
 
+    [Header("Animation")]
+    [SerializeField] private Animator animator; // Drag in Inspector
+
     private int _laneIndex;
     private float _y;
     private float _yVel;
@@ -19,7 +22,6 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        // We drive position directly, so any rigidbody on this object must be kinematic.
         if (TryGetComponent(out Rigidbody rb))
         {
             rb.isKinematic = true;
@@ -27,12 +29,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        if (animator == null)
+            animator = GetComponent<Animator>();
+    }
+
     public void Move(InputAction.CallbackContext ctx)
     {
         Vector2 v = ctx.ReadValue<Vector2>();
         if (v.x > 0.5f && _prevMove.x <= 0.5f) ChangeLane(+1);
         else if (v.x < -0.5f && _prevMove.x >= -0.5f) ChangeLane(-1);
-        if (v.y > 0.5f && _prevMove.y <= 0.5f && _y <= 0f) _yVel = jumpVelocity;
+        
+        // Jump input
+        if (v.y > 0.5f && _prevMove.y <= 0.5f && _y <= 0f) 
+        {
+            _yVel = jumpVelocity;
+            
+            // Trigger jump animation
+            if (animator != null)
+                animator.SetTrigger("Jump");
+        }
         _prevMove = v;
     }
 

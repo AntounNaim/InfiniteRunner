@@ -48,4 +48,14 @@ public class Chunk : MonoBehaviour
         if ((mask & LaneMask.Middle) != 0) Gizmos.DrawWireCube(center,                                size);
         if ((mask & LaneMask.Right)  != 0) Gizmos.DrawWireCube(center + Vector3.right * laneOffset, size);
     }
+    
+    public void ResetCoins()
+    {
+        Coin[] coins = GetComponentsInChildren<Coin>(true); 
+        foreach (Coin coin in coins)
+        {
+            coin.gameObject.SetActive(true);
+        }
+    }
+
 }
