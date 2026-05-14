@@ -1,4 +1,4 @@
-# Infinite Runner – Final Project
+# Toy Escape – Final Project
 
 **Name:** Antoun Naim  
 **Student ID:** 20231971
