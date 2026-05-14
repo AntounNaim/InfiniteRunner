@@ -414,6 +414,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5261188426172204751}
     m_Modifications:
+    - target: {fileID: 5759395614750049850, guid: 27e6e59d7c48a2245873ba94595a484b, type: 3}
+      propertyPath: pickupSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 8f350c438947ac34b85dcd87e139ca77, type: 3}
+    - target: {fileID: 5759395614750049850, guid: 27e6e59d7c48a2245873ba94595a484b, type: 3}
+      propertyPath: pickupParticlePrefab
+      value: 
+      objectReference: {fileID: 1313065987415336311, guid: 8e1fcbc84417ed3419e79534c0f60e07, type: 3}
     - target: {fileID: 6074087315766241903, guid: 27e6e59d7c48a2245873ba94595a484b, type: 3}
       propertyPath: m_Name
       value: coin_1_gold

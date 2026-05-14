@@ -60,10 +60,7 @@ public class GameManager : MonoBehaviour
     public void QuitToMenu()
     {
         Time.timeScale = 1f;
-        // Option 1: load main menu scene (create one)
-        // SceneManager.LoadScene("MainMenu");
-        // Option 2: restart (for now)
-        RestartGame();
+        SceneManager.LoadScene("MainMenu"); // Load by name or index 0
     }
 
     public void ResumeGame()

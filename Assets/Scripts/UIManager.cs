@@ -1,34 +1,89 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;   // if using legacy Text, change accordingly
+using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
-    public TextMeshProUGUI distanceText;        // HUD distance
-    public GameObject gameOverPanel;            // reference to the panel
-    public TextMeshProUGUI finalDistanceText;   // inside panel, for final score
+    [Header("HUD")]
+    public TextMeshProUGUI distanceText;
+    public TextMeshProUGUI coinsText;
+    public GameObject newHighScoreMessage; // UI text that shows "New High Score!" then fades
+
+    [Header("Game Over Panel")]
+    public GameObject gameOverPanel;
+    public TextMeshProUGUI finalDistanceText;
+    public TextMeshProUGUI finalCoinsText;
+    public TextMeshProUGUI highestCoinsText; // NEW: displays highest coins ever
+    public TextMeshProUGUI highScoreText;
+
+    private int highestCoins = 0;
 
     private void Start()
     {
         gameOverPanel.SetActive(false);
+        if (newHighScoreMessage != null)
+            newHighScoreMessage.SetActive(false);
+        
+        // Load highest coins
+        highestCoins = PlayerPrefs.GetInt("HighestCoins", 0);
     }
-
-    public TextMeshProUGUI coinsText;
 
     private void Update()
     {
         if (GameManager.Instance != null && !GameManager.Instance.IsGameOver)
         {
-            distanceText.text = "Distance: " + Mathf.FloorToInt(GameManager.Instance.Distance);
+            int distance = Mathf.FloorToInt(GameManager.Instance.Distance);
+            distanceText.text = "Distance: " + distance;
             coinsText.text = "Coins: " + GameManager.Instance.Coins;
+
+            // Check for new high score during play
+            int currentHighScore = PlayerPrefs.GetInt("HighScore", 0);
+            if (distance > currentHighScore && distance > 0)
+            {
+                // Show one-time message
+                if (newHighScoreMessage != null && !newHighScoreMessage.activeSelf)
+                {
+                    StartCoroutine(ShowNewHighScoreMessage());
+                }
+            }
         }
     }
 
-    // Called by GameManager when game ends
+    private IEnumerator ShowNewHighScoreMessage()
+    {
+        newHighScoreMessage.SetActive(true);
+        yield return new WaitForSecondsRealtime(2f);
+        newHighScoreMessage.SetActive(false);
+    }
+
     public void ShowGameOver()
     {
+        int finalDistance = Mathf.FloorToInt(GameManager.Instance.Distance);
+        int finalCoins = GameManager.Instance.Coins;
+        int currentHighScore = PlayerPrefs.GetInt("HighScore", 0);
+
+        // Update highest coins
+        if (finalCoins > highestCoins)
+        {
+            highestCoins = finalCoins;
+            PlayerPrefs.SetInt("HighestCoins", highestCoins);
+            PlayerPrefs.Save();
+        }
+
         gameOverPanel.SetActive(true);
-        int final = Mathf.FloorToInt(GameManager.Instance.Distance);
-        finalDistanceText.text = "Final Score: " + final;
+        finalDistanceText.text = "Distance: " + finalDistance;
+        finalCoinsText.text = "Coins: " + finalCoins;
+        highestCoinsText.text = "Best Coins: " + highestCoins;
+
+        // Distance high score
+        if (finalDistance > currentHighScore)
+        {
+            PlayerPrefs.SetInt("HighScore", finalDistance);
+            highScoreText.text = "Best: " + finalDistance;
+        }
+        else
+        {
+            highScoreText.text = "Best: " + currentHighScore;
+        }
     }
 }
